@@ -1,71 +1,18 @@
 package com.TaskTwo.TaskTwo.service;
 
 import com.TaskTwo.TaskTwo.entity.User;
-import com.TaskTwo.TaskTwo.entity.UserInfo;
-import com.TaskTwo.TaskTwo.repository.UserInfoRepository;
-import com.TaskTwo.TaskTwo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class UserService {
+public interface UserService {
 
-    @Autowired
-    UserRepository repository;
-    @Autowired
-    UserInfoRepository userInfoRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    User saveUser(User user);
 
-    //pagination
-    public Page<User> findUserWithPagination(int offset,int pageSize){
-        Page<User> users= repository.findAll(PageRequest.of(offset,pageSize));
-        return users;
-    }
+    List<User> getAllUser();
 
-    //sorting
-    public List<User> findUserWithSorting(String field){
-        return repository.findAll(Sort.by(Sort.Direction.ASC,field));
-    }
+    User getUserById(Long id);
+    User getUserByName(String userName);
 
-    public List<User> getAllUser(){
-        return repository.findAll();
-    }
-
-    @Cacheable(value = "user",key = "#id")
-    public User getUserId(Long id){
-        return repository.findById(id).orElse(null);
-    }
-    public User getUserName(String userName){
-        return repository.findByUserName(userName);
-    }
-    @CacheEvict(value = "userData", key = "#user.id")
-    public User saveUser(User user){
-        return repository.save(user);
-    }
-    @CachePut(value = "userData", key = "#user.id")
-    public User updateUser(User user){
-        return repository.save(user);
-    }
-    @CacheEvict(value = "userData", key = "#id")
-    public void deleteUser(Long id){
-        repository.deleteById(id);
-    }
-
-    public String addUser(UserInfo userInfo){
-        userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
-         userInfoRepository.save(userInfo);
-         return "user added to service";
-    }
-
+    User updateUser(User user);
+    void deleteUser(Long id);
 }
-

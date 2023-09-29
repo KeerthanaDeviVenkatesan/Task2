@@ -4,8 +4,8 @@ import com.TaskTwo.TaskTwo.dto.APIResponse;
 import com.TaskTwo.TaskTwo.dto.AuthRequest;
 import com.TaskTwo.TaskTwo.entity.User;
 import com.TaskTwo.TaskTwo.entity.UserInfo;
+import com.TaskTwo.TaskTwo.service.Implements.UserServiceImpl;
 import com.TaskTwo.TaskTwo.service.JWTService;
-import com.TaskTwo.TaskTwo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    UserService service;
+    UserServiceImpl service;
 
     @Autowired
     JWTService jwtService;
@@ -64,7 +64,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public User getUserId(@PathVariable Long id) {
         logger.info("Received request to get user by ID: {}", id);
-        User user = service.getUserId(id);
+        User user = service.getUserById(id);
         logger.info("Returned user by ID: {}", user);
         return user;
     }
@@ -73,7 +73,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public User getUserName(@PathVariable String userName) {
         logger.info("Received request to get user by username: {}", userName);
-        User user = service.getUserName(userName);
+        User user = service.getUserByName(userName);
         logger.info("Returned user by username: {}", user);
         return user;
     }
